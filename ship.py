@@ -1,10 +1,12 @@
+""" Alien ship """
 import pygame
 
 class Ship():
     """ Alien ship """
-    def __init__(self, screen):
+    def __init__(self, ai_setting, screen):
         """Initialize the ship and set its start position."""
         self.screen = screen
+        self.ai_setting = ai_setting
 
         # load the ship image ad get its rect.
         self.image = pygame.image.load("part2/alien_invasion_game/images/ship.bmp")
@@ -14,6 +16,11 @@ class Ship():
         # start each new ship at the bottom center of the screen
         self.rect.centerx = self.screen_rect.centerx
         self.rect.bottom = self.screen_rect.bottom
+
+        # store a decimal value for the ship's center
+        self.center = float(self.rect.centerx)
+
+        # Movement flags
         self.moving_right = False
         self.moving_left = False
 
@@ -23,7 +30,14 @@ class Ship():
 
     def update(self):
         """Update the ship's position based on the movement flag."""
-        if self.moving_right:
-            self.rect.centerx += 1
-        elif self.moving_left:
-            self.rect.centerx -= 1
+
+        # Update the ship's center value, not the rect.
+        if self.moving_right and self.rect.right < self.screen_rect.right:
+            #self.rect.centerx += 1
+            self.center += self.ai_setting.ship_speed_factor
+        elif self.moving_left and self.rect.left > 0:
+            #self.rect.centerx -= 1
+            self.center -= self.ai_setting.ship_speed_factor
+
+        # Update rect object from self.center.
+        self.rect.centerx = self.center
